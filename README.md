@@ -24,7 +24,7 @@
 - macOs/Linux:  
 
 git clone https://github.com/novodevz/zoo_flskapp_sqlite_alchemy.git  
-cd zoo_flskapp_sqlite_alchemy.git  
+cd zoo_flskapp_sqlite_alchemy 
 python -m venv venv  
 source venv/Scripts/activate  
 pip install -r requirements.txt  

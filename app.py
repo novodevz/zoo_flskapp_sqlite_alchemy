@@ -19,7 +19,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///zoo.db"
 # Configure the upload folder
-app.config["UPLOAD_FOLDER"] = os.path.join(os.getcwd(), "static", "uploads")
+app.config["UPLOAD_FOLDER"] = os.path.join("static", "uploads")
+
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -167,11 +168,10 @@ def default_image_url():
 
 @app.route("/add", methods=["GET", "POST"])
 def add():
-    # Check if the user is logged in
     if not session.get("is_loggedin"):
         flash("You must be logged in as admin to add animals.", "danger")
         return redirect(url_for("login"))
-    # Check if the logged-in user is an admin
+
     if not session.get("admin_user"):
         flash("Only admins can add animals.", "danger")
         return redirect(url_for("zoo"))
@@ -181,22 +181,25 @@ def add():
         species = request.form.get("species")
         description = request.form.get("description")
 
-        # Check if the file is in the request
         if "image" in request.files:
             image = request.files["image"]
 
-            # Check if the file is allowed and not empty
             if image.filename != "" and allowed_file(image.filename):
-                # Save the file to the server with a unique filename
                 filename = secure_filename(image.filename)
                 timestamp = int(time.time())
                 unique_filename = f"{timestamp}_{filename}"
-                relative_path = os.path.join(
-                    app.config["UPLOAD_FOLDER"], unique_filename
-                )
-                image.save(relative_path)
+                relative_path = os.path.join("uploads", unique_filename)
 
-                # Create a new Animal instance with the image path
+                # Ensure the "uploads" directory exists, and create it if not
+                uploads_dir = os.path.join(app.root_path, "static", "uploads")
+                if not os.path.exists(uploads_dir):
+                    os.makedirs(uploads_dir)
+
+                # Construct the absolute path to save the image
+                absolute_path = os.path.join(uploads_dir, unique_filename)
+
+                image.save(absolute_path)
+
                 new_animal = Animal(
                     name=name,
                     species=species,
@@ -204,10 +207,8 @@ def add():
                     img=relative_path,
                 )
             else:
-                # If the file is empty or invalid, create a new Animal instance without the image path
                 new_animal = Animal(name=name, species=species, description=description)
         else:
-            # If no image is provided, create a new Animal instance without the image path
             new_animal = Animal(name=name, species=species, description=description)
 
         try:
