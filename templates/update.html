@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Animal Information{% endblock %}
+
+{% block content_title %}Update Animal Information{% endblock %}
+
+{% block content %}
+<div id="animal-list" class="mb-4">
+    <h4>Animal List</h4>
+    <div class="row">
+        {% for animal in animals %}
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">{{ animal.name }}</h6>
+                    <p class="card-text">{{ animal.species }}</p>
+                    <a href="#" class="btn btn-primary"
+                        onclick="showUpdateForm('{{ animal.id }}', '{{ animal.name }}', '{{ animal.species }}', '{{ animal.description }}')">Update</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="update-form" class="mb-4" style="display: none;">
+    <h4>Update Animal</h4>
+    <form method="post" action="{{ url_for('update', animal_id=0) }}" id="update-animal-form">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+            <button type="button" class="btn btn-danger" onclick="clearField('name')"
+                style="margin-top: 5px;">Delete</button>
+        </div>
+
+        <div class="mb-3">
+            <label for="species" class="form-label">Species</label>
+            <input type="text" class="form-control" id="species" name="species">
+            <button type="button" class="btn btn-danger" onclick="clearField('species')"
+                style="margin-top: 5px;">Delete</button>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="description" name="description">
+            <button type="button" class="btn btn-danger" onclick="clearField('description')"
+                style="margin-top: 5px;">Delete</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary" onclick="hideUpdateForm()">Update</button>
+    </form>
+</div>
+
+
+<script>
+    function showUpdateForm(animalId, name, species, description) {
+        // Set the form action with the selected animal's ID
+        document.getElementById('update-animal-form').action = '{{ url_for("update", animal_id=0) }}'.replace('0', animalId);
+
+        // Set the values of the form fields
+        document.getElementById('name').value = name;
+        document.getElementById('species').value = species;
+        document.getElementById('description').value = description;
+
+        // Hide the animal list and show the update form
+        document.getElementById('animal-list').style.display = 'none';
+        document.getElementById('update-form').style.display = 'block';
+    }
+
+    function hideUpdateForm() {
+        // Show the animal list and hide the update form
+        document.getElementById('animal-list').style.display = 'block';
+        document.getElementById('update-form').style.display = 'none';
+    }
+
+    function clearField(fieldName) {
+        // Clear the value of the specified field
+        document.getElementById(fieldName).value = '';
+    }
+</script>
+{% endblock %}

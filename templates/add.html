@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Animal{% endblock %}
+
+{% block content_title %}Add Animal{% endblock %}
+
+{% block content %}
+    <form method="post" action="{{ url_for('add') }}" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="species" class="form-label">Species</label>
+            <input type="text" class="form-control" id="species" name="species" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="image" name="image">
+        </div>
+        <button type="submit" class="btn btn-primary">Add Animal</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Zoo{% endblock %}
+
+{% block content_title %}Zoo Animals{% endblock %}
+
+{% block content %}
+    {% set default_image_url = url_for('static', filename='images/zoo.jpg') %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Species</th>
+                <th>Description</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for animal in animals %}
+                <tr>
+                    <td>{{ animal.id }}</td>
+                    <td>{{ animal.name }}</td>
+                    <td>{{ animal.species }}</td>
+                    <td>{{ animal.description }}</td>
+                    <td>
+                        {% if animal.img and animal.img != default_image_url %}
+                        <img src="{{ url_for('static', filename='uploads/' + animal.img.split('uploads\\')[-1].replace('\\', '/')) }}" alt="Animal Image" height="50">
+                        {% else %}
+                            <img src="{{ default_image_url }}" alt="Default Animal Image" height="50">
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

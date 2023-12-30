@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Animal{% endblock %}
+
+{% block content_title %}Delete Animal{% endblock %}
+
+{% block content %}
+    <div id="animal-list" class="mb-4">
+        <h4>Animal List</h4>
+        <ul class="list-group">
+            {% for animal in animals %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        {{ animal.name }} - {{ animal.species }}
+                    </div>
+                    <button class="btn btn-danger" onclick="confirmDelete('{{ animal.id }}', '{{ animal.name }}')">Delete</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function confirmDelete(animalId, animalName) {
+            if (confirm(`Are you sure you want to delete ${animalName}?`)) {
+                // If the user confirms, send a DELETE request
+                fetch(`/delete/${animalId}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        // Reload the page to update the animal list
+                        location.reload();
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+{% endblock %}
